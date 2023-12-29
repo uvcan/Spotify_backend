@@ -9,14 +9,22 @@ const Playlist=new mongoose.Schema({
         type:String,
         required:true
     },
-    track:{
-        type:String,
-        required:true
-    },
-    artist:{
+    owner:{
         type:mongoose.Types.ObjectId,
         ref:'user'
-    }
+    },
+    songs:[
+        {
+            type:mongoose.Types.ObjectId,
+            ref:'song'
+        }
+    ],
+    collabrators:[
+        {
+            type:mongoose.Types.ObjectId,
+            ref:'user'
+        }
+    ]
     
 });
 
