@@ -1,5 +1,6 @@
 const Song=require('../models/song');
 const User=require('../models/user');
+
 //Creating songs
 module.exports.crete=async function(req,res){
     const {name,thumbnail,track}=req.body;
@@ -24,7 +25,7 @@ module.exports.mySong=async function(req,res){
 
 //Get all the song that has been published by an artist
 module.exports.artistSongs=async function(req,res){
-    const {artistId}=req.body;
+    const {artistId}=req.params.artistId;
     //If artist dose not exist
     const user=User.find({_id:artistId});
     if(!user){
@@ -37,7 +38,7 @@ module.exports.artistSongs=async function(req,res){
 
 //Get the song with the help of name of the song 
 module.exports.songName=async function(req,res){
-    const {songName}=req.body;
+    const {songName}=req.params.songName;
     //Study pattern matching insted of direct song matching 
     const songs=await Song.find({name:songName});
     return res.status(200).json({data:songs});

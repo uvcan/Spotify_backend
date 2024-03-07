@@ -2,12 +2,15 @@ const express= require('express');
 const mongoose=require('mongoose');
 const passport=require('passport');
 const db=require('./config/mongoose');
+const cors=require('cors');
 const JwtStrategy = require('passport-jwt').Strategy,
     ExtractJwt = require('passport-jwt').ExtractJwt;
 require('dotenv').config();
 
 const port= 8080;
 const app=express();
+
+//app.use(cors);
 app.use(express.json());
 
 const User=require('./models/user');
