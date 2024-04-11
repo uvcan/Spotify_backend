@@ -29,6 +29,7 @@ module.exports.create=async function(req,res){
 //Get all playlist by id
 module.exports.getPlaylist=async function (req,res){
     const playlistId=req.params.playlistId;
+    //console.log(playlistId);
     const playlist=await Playlist.findOne({_id:playlistId});
     if(!playlist){
         return res.status(302).json({err:"Invalid request"});
@@ -58,16 +59,17 @@ module.exports.addSong=async function(req,res){
     //Check if playlist is valid or not 
     const playlist=await Playlist.findOne({_id:playlistId});
     if(!playlist){
-        return res.status(400).json({err:"Not allowed"});
+        return res.status(302).json({err:"Invalid credentila"});
     }
+   
     //Check if the current user and playlist owener are same or not 
-    if(playlist.owner != currentUser._id && !playlist.collabrators.includes(currentUser._id) ){
+    if(!playlist.owner.equals(currentUser._id) && !playlist.collabrators.includes(currentUser._id) ){
         return res.status(400).json({err:"Not allowed"});
     }
     //Check if the song is valid or not 
     const song=await Song.findOne({_id:songId});
     if(!song){
-        return res.status(400).json({err :"Not allowed"});
+        return res.status(302).json({err :"Invalid Data"});
     }
 
     //Finally we can add the song to the playlist

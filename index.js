@@ -3,56 +3,49 @@ const mongoose=require('mongoose');
 const passport=require('passport');
 const db=require('./config/mongoose');
 const cors=require('cors');
+
 const JwtStrategy = require('passport-jwt').Strategy,
     ExtractJwt = require('passport-jwt').ExtractJwt;
 require('dotenv').config();
 
 const port= 8080;
 const app=express();
+app.use(cors());
 
-//app.use(cors);
 app.use(express.json());
 
 const User=require('./models/user');
 
-//use mongoose to connect to Mongo Db Atlas
-// mongoose.connect(
-//                  "mongodb+srv://spotify:"+process.env.MONGO_PASSWORD+"@cluster0.auorfkw.mongodb.net/?retryWrites=true&w=majority",
-//             {
-//                     // useNewUrlParser: true, 
-//                     // useUnifiedTopology: true
-//                 }
-//             )
-//             .then((x)=>{
-//                 console.log('Connected to Mongo DB');
-//             })
-//             .catch((err)=>{
-//                 console.log('Error in connecting to DB');
-//             });
 
 app.get('/',function(req,res){
     return res.send('Hellow world!');
 });
 
-//Use JWT for authentication
-var opts={}
-opts.jwtFromRequest = ExtractJwt.fromAuthHeaderAsBearerToken();
-opts.secretOrKey = process.env.PASSPORT_JWT_SECREAT;
 
-passport.use(new JwtStrategy(opts, function(jwt_payload, done) {
-    User.findOne({id: jwt_payload.sub}, function(err, user) {
-        if (err) {
-            return done(err, false);
-        }
+// setup passport-jwt
+const opts = {
+    jwtFromRequest: ExtractJwt.fromAuthHeaderAsBearerToken(),
+    secretOrKey: "thisKeyIsSupposedToBeSecret",
+  };
+  
+  passport.use(
+    new JwtStrategy(opts, async (jwt_payload, done) => {
+      //console.log("JWT Payload:", jwt_payload); // Debugging line
+      try {
+        const user = await User.findOne({ _id: jwt_payload.sub  });
+        //console.log("Found User:", user); // Debugging line
         if (user) {
-            return done(null, user);
+          return done(null, user);
         } else {
-            return done(null, false);
-            // or you could create a new account
+          return done(null, false);
+          // or you could create a new account
         }
-    });
-}));
-
+      } catch (err) {
+        return done(err, false);
+      }
+    })
+  );
+  
 
 //use express router
 app.use('/',require('./routes'));

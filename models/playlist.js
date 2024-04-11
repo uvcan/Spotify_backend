@@ -1,6 +1,6 @@
 const mongoose=require('mongoose');
 
-const Playlist=new mongoose.Schema({
+const PlaylistSchema=new mongoose.Schema({
     name:{
         type:String,
         required:true
@@ -29,5 +29,5 @@ const Playlist=new mongoose.Schema({
 });
 
 
-const PlaylistModel=mongoose.model('PlaylistModel',Playlist);
-module.exports=PlaylistModel;
+const Playlist=mongoose.model('Playlist',PlaylistSchema);
+module.exports=Playlist;
